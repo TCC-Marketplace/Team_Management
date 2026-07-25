@@ -146,6 +146,41 @@ input[type=file]{display:none;}
 
 /* ── Evidence images row ── */
 .evidence-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.evidence-slot{position:relative;}
+.btn-remove-evidence{
+  width:100%;margin-top:6px;padding:5px 8px;border:1px solid var(--red);
+  border-radius:6px;background:#fff;color:var(--red);font-size:10.5px;
+  font-family:'Sarabun',sans-serif;cursor:pointer;
+}
+.btn-remove-evidence:hover{background:#fbeceb;}
+.btn-add-evidence{
+  margin-left:10px;padding:3px 10px;border:1px solid var(--gd);border-radius:12px;
+  background:var(--gl);color:var(--gd);font-size:10.5px;font-weight:700;
+  font-family:'Sarabun',sans-serif;cursor:pointer;
+}
+.btn-add-evidence:hover{background:var(--gold-p);}
+
+/* ── Assistant blocks (dynamic, multiple) ── */
+.btn-add-assistant{
+  padding:4px 12px;border:1px solid var(--gold);border-radius:14px;
+  background:transparent;color:var(--gold);font-size:11px;font-weight:700;
+  font-family:'Sarabun',sans-serif;cursor:pointer;
+}
+.btn-add-assistant:hover{background:rgba(255,255,255,.15);}
+.assistant-block{
+  border:1.5px dashed var(--border);border-radius:8px;padding:14px;margin-bottom:16px;
+}
+.assistant-block:last-child{margin-bottom:0;}
+.assistant-block-header{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;font-weight:700;color:var(--gd);margin-bottom:10px;
+}
+.btn-remove-assistant{
+  padding:4px 10px;border:1px solid var(--red);border-radius:6px;
+  background:#fff;color:var(--red);font-size:10.5px;
+  font-family:'Sarabun',sans-serif;cursor:pointer;
+}
+.btn-remove-assistant:hover{background:#fbeceb;}
 
 /* ── Submit button ── */
 .btn-submit{
@@ -575,41 +610,12 @@ input[type=file]{display:none;}
   </div>
 
   <div class="card">
-    <div class="card-header">🤝 ผู้ช่วย (Assistant)</div>
-    <div class="card-body">
-      <div class="form-row col2">
-        <div class="form-group">
-          <label>ชื่อ-นามสกุล <span class="req">*</span></label>
-          <input type="text" id="as_name" placeholder="ชื่อ นามสกุล">
-        </div>
-        <div class="form-group">
-          <label>เบอร์โทรศัพท์</label>
-          <input type="tel" id="as_phone" placeholder="08X-XXX-XXXX">
-        </div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group">
-          <label>LINE ID</label>
-          <input type="text" id="as_line" placeholder="@line_id">
-        </div>
-        <div class="form-group">
-          <label>อีเมล</label>
-          <input type="email" id="as_email" placeholder="email@example.com">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>รูปโปรไฟล์ผู้ช่วย</label>
-        <div class="img-upload-wrap">
-          <div class="img-preview" id="prev_as" onclick="document.getElementById('file_as').click()">
-            <span class="upload-icon">📷</span>
-            <span>คลิกเพื่ออัปโหลดรูป</span>
-            <img id="img_as" src="" alt="">
-          </div>
-          <input type="file" id="file_as" accept="image/*" onchange="previewImg(this,'prev_as','img_as','as_imgUrl','status_as')">
-        </div>
-        <div class="img-status" id="status_as"></div>
-        <input type="hidden" id="as_imgUrl">
-      </div>
+    <div class="card-header">
+      <span>🤝 ผู้ช่วย (Assistant) — เพิ่มได้มากกว่า 1 คน</span>
+      <button type="button" class="btn-add-assistant" onclick="addAssistant()" style="margin-left:auto;">+ เพิ่มผู้ช่วย</button>
+    </div>
+    <div class="card-body" id="assistants-container">
+      <!-- assistant blocks จะถูกสร้างด้วย JS (addAssistant) ตอนโหลดหน้า -->
     </div>
   </div>
 
@@ -815,35 +821,11 @@ input[type=file]{display:none;}
       </div>
 
       <div class="form-group">
-        <label>📸 รูปหลักฐานผลงาน (สูงสุด 3 รูป)</label>
-        <div class="evidence-row">
-          <div>
-            <div class="img-preview" id="prev_e1" onclick="document.getElementById('file_e1').click()">
-              <span class="upload-icon">📷</span><span>หลักฐานที่ 1</span>
-              <img id="img_e1" src="" alt="">
-            </div>
-            <input type="file" id="file_e1" accept="image/*" onchange="previewImg(this,'prev_e1','img_e1','mo_img1','status_e1')">
-            <div class="img-status" id="status_e1"></div>
-            <input type="hidden" id="mo_img1">
-          </div>
-          <div>
-            <div class="img-preview" id="prev_e2" onclick="document.getElementById('file_e2').click()">
-              <span class="upload-icon">📷</span><span>หลักฐานที่ 2</span>
-              <img id="img_e2" src="" alt="">
-            </div>
-            <input type="file" id="file_e2" accept="image/*" onchange="previewImg(this,'prev_e2','img_e2','mo_img2','status_e2')">
-            <div class="img-status" id="status_e2"></div>
-            <input type="hidden" id="mo_img2">
-          </div>
-          <div>
-            <div class="img-preview" id="prev_e3" onclick="document.getElementById('file_e3').click()">
-              <span class="upload-icon">📷</span><span>หลักฐานที่ 3</span>
-              <img id="img_e3" src="" alt="">
-            </div>
-            <input type="file" id="file_e3" accept="image/*" onchange="previewImg(this,'prev_e3','img_e3','mo_img3','status_e3')">
-            <div class="img-status" id="status_e3"></div>
-            <input type="hidden" id="mo_img3">
-          </div>
+        <label>📸 รูปหลักฐานผลงาน (สูงสุด 10 รูป — ระบบเก็บเป็นลิงก์)
+          <button type="button" class="btn-add-evidence" onclick="addEvidenceSlot()">+ เพิ่มรูป</button>
+        </label>
+        <div class="evidence-row" id="evidence-container">
+          <!-- evidence slots จะถูกสร้างด้วย JS (addEvidenceSlot) ตอนโหลดหน้า -->
         </div>
       </div>
     </div>
@@ -1696,6 +1678,11 @@ window.onload = () => {
   ['m_planA','m_planB','m_planC'].forEach(id => {
     document.getElementById(id).addEventListener('input', calcPlanTotal);
   });
+  // เริ่มต้น: ผู้ช่วย 1 คน, รูปหลักฐาน 3 ช่อง (เพิ่มได้ภายหลังสูงสุด 10)
+  addAssistant();
+  addEvidenceSlot();
+  addEvidenceSlot();
+  addEvidenceSlot();
 };
 
 // ── Tab switching ───────────────────────────────────────────────────────────
@@ -1707,54 +1694,221 @@ function switchPage(name, btn) {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ── Image preview & upload ──────────────────────────────────────────────────
-async function previewImg(input, prevId, imgId, hiddenId, statusId) {
-  const file = input.files[0];
+// ── Image preview & upload (generic, element-based) ─────────────────────────
+// ใช้ DOM elements ตรง ๆ แทน id string เพื่อรองรับ block ที่สร้างซ้ำได้ (ผู้ช่วยหลายคน / รูปหลักฐานหลายรูป)
+async function uploadAndPreviewEl(file, imgEl, prevEl, hiddenEl, statusEl) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = async (e) => {
-    const imgEl  = document.getElementById(imgId);
-    const prevEl = document.getElementById(prevId);
     imgEl.src = e.target.result;
     imgEl.style.display = 'block';
     prevEl.classList.add('has-img');
-    document.getElementById(statusId).textContent = '⏳ กำลังอัปโหลด...';
-    // Upload to Drive via API
-    if (API_URL) {
-      try {
-        const res = await apiCall({
-          action:   'uploadImage',
-          base64:   e.target.result,
-          mimeType: file.type,
-          fileName: file.name
-        });
-        if (res.success) {
-          document.getElementById(hiddenId).value = res.url;
-          document.getElementById(statusId).textContent = '✅ อัปโหลดสำเร็จ';
-          document.getElementById(statusId).style.color = 'var(--gd)';
-        } else {
-          document.getElementById(statusId).textContent = '⚠️ ' + res.msg;
-        }
-      } catch(e) {
-        document.getElementById(hiddenId).value = '(local preview only)';
-        document.getElementById(statusId).textContent = '⚠️ ยังไม่ได้ตั้งค่า API';
+    statusEl.textContent = '⏳ กำลังอัปโหลด...';
+    statusEl.style.color = '';
+
+    if (!API_URL) {
+      statusEl.textContent = '⚠️ ตั้งค่า API ก่อนอัปโหลดจริง';
+      return;
+    }
+    try {
+      const res = await apiCall({
+        action:   'uploadImage',
+        base64:   e.target.result,
+        mimeType: file.type,
+        fileName: file.name
+      });
+      if (res.success) {
+        hiddenEl.value = res.url;
+        statusEl.textContent = '✅ อัปโหลดสำเร็จ';
+        statusEl.style.color = 'var(--gd)';
+      } else {
+        statusEl.textContent = '⚠️ ' + res.msg;
+        statusEl.style.color = '';
       }
-    } else {
-      document.getElementById(statusId).textContent = '⚠️ ตั้งค่า API ก่อนอัปโหลดจริง';
+    } catch (err) {
+      // แสดง error จริงแทนการเดาว่า "ยังไม่ได้ตั้งค่า API"
+      hiddenEl.value = '';
+      statusEl.textContent = '⚠️ ' + err.message;
+      statusEl.style.color = '';
     }
   };
   reader.readAsDataURL(file);
 }
 
+// wrapper เดิมไว้ backward-compatible กับช่องรูปที่ยังใช้ id คงที่ (เช่น รูปหัวหน้าทีม)
+async function previewImg(input, prevId, imgId, hiddenId, statusId) {
+  const file = input.files[0];
+  if (!file) return;
+  await uploadAndPreviewEl(
+    file,
+    document.getElementById(imgId),
+    document.getElementById(prevId),
+    document.getElementById(hiddenId),
+    document.getElementById(statusId)
+  );
+}
+
+// ── ผู้ช่วยหลายคน (dynamic) ───────────────────────────────────────────────────
+const MAX_ASSISTANTS = 10;
+let assistantCounter = 0;
+
+function addAssistant() {
+  const container = document.getElementById('assistants-container');
+  const count = container.querySelectorAll('.assistant-block').length;
+  if (count >= MAX_ASSISTANTS) {
+    showToast('เพิ่มผู้ช่วยได้สูงสุด ' + MAX_ASSISTANTS + ' คน', 'error');
+    return;
+  }
+  assistantCounter++;
+  const idx = assistantCounter;
+  const block = document.createElement('div');
+  block.className = 'assistant-block';
+  block.dataset.idx = idx;
+  block.innerHTML = `
+    <div class="assistant-block-header">
+      <span>ผู้ช่วยคนที่ ${count + 1}</span>
+      <button type="button" class="btn-remove-assistant" onclick="removeAssistant(this)">✕ ลบ</button>
+    </div>
+    <div class="form-row col2">
+      <div class="form-group"><label>ชื่อ-นามสกุล <span class="req">*</span></label>
+        <input type="text" class="as-name" placeholder="ชื่อ นามสกุล"></div>
+      <div class="form-group"><label>เบอร์โทรศัพท์ <span class="req">*</span></label>
+        <input type="tel" class="as-phone" placeholder="08X-XXX-XXXX"></div>
+    </div>
+    <div class="form-row col2">
+      <div class="form-group"><label>LINE ID</label>
+        <input type="text" class="as-line" placeholder="@line_id"></div>
+      <div class="form-group"><label>อีเมล <span class="req">*</span></label>
+        <input type="email" class="as-email" placeholder="email@example.com"></div>
+    </div>
+    <div class="form-group">
+      <label>รูปโปรไฟล์ผู้ช่วย</label>
+      <div class="img-upload-wrap">
+        <div class="img-preview as-preview" onclick="this.nextElementSibling.click()">
+          <span class="upload-icon">📷</span><span>คลิกเพื่ออัปโหลดรูป</span>
+          <img class="as-img" src="" alt="">
+        </div>
+        <input type="file" class="as-file" accept="image/*" onchange="onAssistantFileChange(this)">
+      </div>
+      <div class="img-status as-status"></div>
+      <input type="hidden" class="as-imgUrl">
+    </div>`;
+  container.appendChild(block);
+  renumberAssistants();
+}
+
+function removeAssistant(btn) {
+  const container = document.getElementById('assistants-container');
+  if (container.querySelectorAll('.assistant-block').length <= 1) {
+    showToast('ต้องมีผู้ช่วยอย่างน้อย 1 คน', 'error');
+    return;
+  }
+  btn.closest('.assistant-block').remove();
+  renumberAssistants();
+}
+
+function renumberAssistants() {
+  document.querySelectorAll('#assistants-container .assistant-block').forEach((block, i) => {
+    block.querySelector('.assistant-block-header span').textContent = 'ผู้ช่วยคนที่ ' + (i + 1);
+  });
+}
+
+async function onAssistantFileChange(input) {
+  const block = input.closest('.assistant-block');
+  const file = input.files[0];
+  await uploadAndPreviewEl(
+    file,
+    block.querySelector('.as-img'),
+    block.querySelector('.as-preview'),
+    block.querySelector('.as-imgUrl'),
+    block.querySelector('.as-status')
+  );
+}
+
+// ── รูปหลักฐานผลงาน สูงสุด 10 รูป (dynamic) ──────────────────────────────────
+const MAX_EVIDENCE_IMAGES = 10;
+let evidenceCounter = 0;
+
+function addEvidenceSlot() {
+  const container = document.getElementById('evidence-container');
+  const count = container.querySelectorAll('.evidence-slot').length;
+  if (count >= MAX_EVIDENCE_IMAGES) {
+    showToast('เพิ่มรูปหลักฐานได้สูงสุด ' + MAX_EVIDENCE_IMAGES + ' รูป (ระบบเก็บเป็นลิงก์)', 'error');
+    return;
+  }
+  evidenceCounter++;
+  const idx = evidenceCounter;
+  const slot = document.createElement('div');
+  slot.className = 'evidence-slot';
+  slot.dataset.idx = idx;
+  slot.innerHTML = `
+    <div class="img-preview ev-preview" onclick="this.nextElementSibling.click()">
+      <span class="upload-icon">📷</span><span>หลักฐานที่ ${count + 1}</span>
+      <img class="ev-img" src="" alt="">
+    </div>
+    <input type="file" class="ev-file" accept="image/*" onchange="onEvidenceFileChange(this)">
+    <div class="img-status ev-status"></div>
+    <input type="hidden" class="ev-imgUrl">
+    <button type="button" class="btn-remove-evidence" onclick="removeEvidenceSlot(this)">✕ ลบรูปนี้</button>`;
+  container.appendChild(slot);
+  renumberEvidence();
+}
+
+function removeEvidenceSlot(btn) {
+  btn.closest('.evidence-slot').remove();
+  renumberEvidence();
+}
+
+function renumberEvidence() {
+  document.querySelectorAll('#evidence-container .evidence-slot').forEach((slot, i) => {
+    slot.querySelector('.ev-preview span:nth-child(2)').textContent = 'หลักฐานที่ ' + (i + 1);
+  });
+}
+
+async function onEvidenceFileChange(input) {
+  const slot = input.closest('.evidence-slot');
+  const file = input.files[0];
+  await uploadAndPreviewEl(
+    file,
+    slot.querySelector('.ev-img'),
+    slot.querySelector('.ev-preview'),
+    slot.querySelector('.ev-imgUrl'),
+    slot.querySelector('.ev-status')
+  );
+}
+
+// ── validators ────────────────────────────────────────────────────────────────
+function isValidEmail(s) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s||'').trim()); }
+function isValidPhone(s) { return /^[0-9+\-\s()]{9,15}$/.test((s||'').trim()); }
+
 // ── API call helper ─────────────────────────────────────────────────────────
+// หมายเหตุ: ใช้ Content-Type: text/plain (ไม่ใช่ application/json) โดยตั้งใจ
+// เพราะ Google Apps Script Web App ไม่รองรับ CORS preflight (OPTIONS request)
+// การส่งเป็น "simple request" (text/plain) จะไม่ทริกเกอร์ preflight จึงไม่เจอ CORS error
+// ฝั่ง GAS (doPost) ยังคง parse ด้วย JSON.parse(e.postData.contents) ได้ตามปกติ
 async function apiCall(data) {
   if (!API_URL) throw new Error('ยังไม่ได้ตั้งค่า Web App URL');
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(data)
-  });
-  return await res.json();
+  let res;
+  try {
+    res = await fetch(API_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(data)
+    });
+  } catch (networkErr) {
+    // fetch throw ตรงนี้ = เครือข่ายผิดพลาดจริง หรือถูก CORS บล็อกก่อนได้ response
+    throw new Error('เชื่อมต่อ API ไม่ได้ (' + networkErr.message + ') — ตรวจสอบว่า Web App URL ถูกต้องและ Deploy ล่าสุดแล้ว (Deploy > Manage deployments > Edit > New version)');
+  }
+  if (!res.ok) {
+    throw new Error('เซิร์ฟเวอร์ตอบกลับผิดพลาด (HTTP ' + res.status + ')');
+  }
+  let json;
+  try {
+    json = await res.json();
+  } catch (parseErr) {
+    throw new Error('อ่านผลลัพธ์จากเซิร์ฟเวอร์ไม่ได้ — Web App อาจ Return ค่าไม่ถูกต้อง');
+  }
+  return json;
 }
 
 // ── Toast ───────────────────────────────────────────────────────────────────
@@ -1768,25 +1922,54 @@ function showToast(msg, type='success') {
 
 // ── Submit: Team ─────────────────────────────────────────────────────────────
 async function submitTeam() {
-  const dept = document.getElementById('t_dept').value;
-  const name = document.getElementById('t_name').value;
-  const tlName = document.getElementById('tl_name').value;
-  const asName = document.getElementById('as_name').value;
-  if (!dept || !name || !tlName || !asName) {
-    showToast('กรุณากรอกข้อมูลที่จำเป็นให้ครบ','error'); return;
+  const dept = v('t_dept');
+  const name = v('t_name');
+  const tlName  = v('tl_name');
+  const tlPhone = v('tl_phone');
+  const tlEmail = v('tl_email');
+
+  if (!dept || !name || !tlName) {
+    showToast('กรุณากรอก ฝ่าย, ชื่อทีม และชื่อหัวหน้าทีม ให้ครบ', 'error'); return;
   }
+  if (!tlPhone || !isValidPhone(tlPhone)) {
+    showToast('กรุณากรอกเบอร์โทรหัวหน้าทีมให้ถูกต้อง', 'error'); return;
+  }
+  if (!tlEmail || !isValidEmail(tlEmail)) {
+    showToast('กรุณากรอกอีเมลหัวหน้าทีมให้ถูกต้อง', 'error'); return;
+  }
+
+  const assistantBlocks = document.querySelectorAll('#assistants-container .assistant-block');
+  if (assistantBlocks.length === 0) {
+    showToast('กรุณาเพิ่มผู้ช่วยอย่างน้อย 1 คน', 'error'); return;
+  }
+  const assistants = [];
+  for (const block of assistantBlocks) {
+    const aName  = block.querySelector('.as-name').value.trim();
+    const aPhone = block.querySelector('.as-phone').value.trim();
+    const aEmail = block.querySelector('.as-email').value.trim();
+    const aLine  = block.querySelector('.as-line').value.trim();
+    const aImgUrl = block.querySelector('.as-imgUrl').value.trim();
+
+    if (!aName) { showToast('กรุณากรอกชื่อผู้ช่วยให้ครบทุกคน', 'error'); return; }
+    if (!aPhone || !isValidPhone(aPhone)) {
+      showToast('กรุณากรอกเบอร์โทรของผู้ช่วย "' + aName + '" ให้ถูกต้อง', 'error'); return;
+    }
+    if (!aEmail || !isValidEmail(aEmail)) {
+      showToast('กรุณากรอกอีเมลของผู้ช่วย "' + aName + '" ให้ถูกต้อง', 'error'); return;
+    }
+    assistants.push({name:aName, phone:aPhone, email:aEmail, line:aLine, imgUrl:aImgUrl});
+  }
+
   showToast('กำลังบันทึก...','loading');
   try {
     const res = await apiCall({
       action:'saveTeam', dept, teamName:name,
       leaderName:tlName,
-      leaderPhone:document.getElementById('tl_phone').value,
-      leaderLine:document.getElementById('tl_line').value,
-      leaderImgUrl:document.getElementById('tl_imgUrl').value,
-      assistName:asName,
-      assistPhone:document.getElementById('as_phone').value,
-      assistLine:document.getElementById('as_line').value,
-      assistImgUrl:document.getElementById('as_imgUrl').value,
+      leaderPhone:tlPhone,
+      leaderEmail:tlEmail,
+      leaderLine:v('tl_line'),
+      leaderImgUrl:v('tl_imgUrl'),
+      assistants
     });
     showToast(res.msg, res.success?'success':'error');
   } catch(e) { showToast(e.message,'error'); }
@@ -1834,6 +2017,11 @@ async function submitKPI(type) {
 // ── Submit: Monthly ───────────────────────────────────────────────────────────
 async function submitMonthly() {
   if (!v('mo_teamId')||!v('mo_month')) { showToast('กรุณากรอก รหัสทีม และ เดือน','error'); return; }
+
+  const images = Array.from(document.querySelectorAll('#evidence-container .ev-imgUrl'))
+    .map(el => el.value.trim())
+    .filter(Boolean);
+
   showToast('กำลังบันทึก...','loading');
   try {
     const res = await apiCall({
@@ -1842,7 +2030,7 @@ async function submitMonthly() {
       dept:v('mo_dept'), month:v('mo_month'),
       goodPoints:v('mo_good'), problems:v('mo_problem'),
       solutions:v('mo_solution'), nextPlan:v('mo_next'),
-      img1:v('mo_img1'), img2:v('mo_img2'), img3:v('mo_img3'),
+      images,
       status:v('mo_status')
     });
     showToast(res.msg, res.success?'success':'error');
