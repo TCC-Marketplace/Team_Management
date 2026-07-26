@@ -361,6 +361,33 @@ input[type=file]{display:none;}
 #toast.error{background:#c0392b;color:#fff;}
 #toast.loading{background:#2471a3;color:#fff;}
 
+/* ── เพิ่มเมื่อ ก.ค. 2569: Confirm Modal ของระบบ (แทน browser confirm()) ── */
+.tcc-modal-overlay{
+  position:fixed;inset:0;z-index:10000;
+  background:rgba(0,0,0,.55);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+.tcc-modal-overlay.show{display:flex;}
+.tcc-modal-box{
+  background:linear-gradient(135deg,var(--gd),var(--gm));
+  color:var(--gold-l);border:1.5px solid var(--gold);
+  border-radius:12px;max-width:360px;width:100%;
+  padding:22px 24px;box-shadow:0 10px 40px rgba(0,0,0,.4);
+  text-align:center;
+}
+.tcc-modal-title{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:10px;}
+.tcc-modal-msg{font-size:13px;color:var(--gold-p);line-height:1.6;margin-bottom:20px;}
+.tcc-modal-actions{display:flex;gap:10px;justify-content:center;}
+.tcc-modal-btn{
+  padding:9px 22px;border-radius:20px;border:none;cursor:pointer;
+  font-family:'Sarabun',sans-serif;font-size:13px;font-weight:700;
+  transition:opacity .15s;
+}
+.tcc-modal-btn:hover{opacity:.85;}
+.tcc-modal-btn.confirm{background:var(--gold);color:var(--gd);}
+.tcc-modal-btn.cancel{background:rgba(255,255,255,.12);color:var(--gold-l);border:1px solid var(--gold);}
+
 /* ── API config banner ── */
 .api-banner{
   background:linear-gradient(135deg,var(--gd),var(--gm));
@@ -1511,10 +1538,10 @@ input[type=file]{display:none;}
             </tr>
           </thead>
           <tbody>
-            <tr><td style="padding:6px;">25%</td><td style="padding:6px;text-align:right;" id="b_ms25">0 USDT</td><td style="padding:6px;text-align:right;color:#999;">— รอ System Approved</td></tr>
-            <tr><td style="padding:6px;">50%</td><td style="padding:6px;text-align:right;" id="b_ms50">0 USDT</td><td style="padding:6px;text-align:right;color:#999;">— รอ System Approved</td></tr>
-            <tr><td style="padding:6px;">75%</td><td style="padding:6px;text-align:right;" id="b_ms75">0 USDT</td><td style="padding:6px;text-align:right;color:#999;">— รอ System Approved</td></tr>
-            <tr><td style="padding:6px;">100%</td><td style="padding:6px;text-align:right;" id="b_ms100">0 USDT</td><td style="padding:6px;text-align:right;color:#999;">— รอ System Approved</td></tr>
+            <tr><td style="padding:6px;">25%</td><td style="padding:6px;text-align:right;" id="b_ms25">0 USDT</td><td style="padding:6px;text-align:right;color:#999;">— System Approved</td></tr>
+            <tr><td style="padding:6px;">50%</td><td style="padding:6px;text-align:right;" id="b_ms50">0 USDT</td><td style="padding:6px;text-align:right;color:#999;">— System Approved</td></tr>
+            <tr><td style="padding:6px;">75%</td><td style="padding:6px;text-align:right;" id="b_ms75">0 USDT</td><td style="padding:6px;text-align:right;color:#999;">— System Approved</td></tr>
+            <tr><td style="padding:6px;">100%</td><td style="padding:6px;text-align:right;" id="b_ms100">0 USDT</td><td style="padding:6px;text-align:right;color:#999;">— System Approved</td></tr>
           </tbody>
         </table>
       </div>
@@ -1525,7 +1552,7 @@ input[type=file]{display:none;}
       </div>
 
       <div class="kpi-group">
-        <div class="kpi-group-title">📤 รายงานการเบิกจ่าย (ใช้หลังจาก admin อนุมัติงบแล้ว)</div>
+        <div class="kpi-group-title">📤 รายงานการเบิกจ่าย (ใช้หลังจาก System Approved อนุมัติงบแล้ว)</div>
         <div class="form-group">
           <label>เลือก Milestone ที่ถึงแล้ว (สะสม)</label>
           <select id="b_milestone">
@@ -1870,7 +1897,7 @@ input[type=file]{display:none;}
         <span style="font-size:18px;color:var(--gold);padding:0 6px;">→</span>
         <div class="rights-desc">
           สมาชิกแต่ละคนมีสิทธิ์ <strong>5 ครั้ง</strong> ต่อบัญชี<br>
-          เมื่อหมดสิทธิ์ → ยื่นขอ Refresh → Admin อนุมัติ → ได้สิทธิ์ 5/5 ใหม่
+          เมื่อหมดสิทธิ์ → ยื่นขอ Refresh → System Approved  → ได้สิทธิ์ 5/5 ใหม่
         </div>
       </div>
     </div>
@@ -2372,6 +2399,18 @@ async function dl(fmt) {
 <!-- Toast -->
 <div id="toast"></div>
 
+<!-- Confirm Modal ของระบบ (แทน browser confirm()) -->
+<div class="tcc-modal-overlay" id="tcc-modal-overlay">
+  <div class="tcc-modal-box">
+    <div class="tcc-modal-title" id="tcc-modal-title">ยืนยันการทำรายการ</div>
+    <div class="tcc-modal-msg" id="tcc-modal-msg"></div>
+    <div class="tcc-modal-actions">
+      <button class="tcc-modal-btn confirm" id="tcc-modal-confirm-btn">ตกลง</button>
+      <button class="tcc-modal-btn cancel" id="tcc-modal-cancel-btn">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── Config ──────────────────────────────────────────────────────────────────
 // Web App URL (Google Apps Script) ตั้งค่าไว้ตายตัว — ไม่ต้องตั้งค่าผ่านหน้าเว็บอีกต่อไป
@@ -2857,6 +2896,33 @@ function showToast(msg, type='success') {
   t.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
   t.className = 'show ' + type;
   if (type !== 'loading') setTimeout(()=>{ t.className=''; }, 4000);
+}
+
+// ── เพิ่มเมื่อ ก.ค. 2569: Modal ยืนยัน ของระบบ (แทน browser confirm()) ──────────
+function tccConfirm(message, title) {
+  return new Promise(function(resolve) {
+    const overlay   = document.getElementById('tcc-modal-overlay');
+    const titleEl   = document.getElementById('tcc-modal-title');
+    const msgEl     = document.getElementById('tcc-modal-msg');
+    const confirmBtn= document.getElementById('tcc-modal-confirm-btn');
+    const cancelBtn = document.getElementById('tcc-modal-cancel-btn');
+
+    titleEl.textContent = title || 'ยืนยันการทำรายการ';
+    msgEl.textContent   = message || '';
+    overlay.classList.add('show');
+
+    function cleanup(result) {
+      overlay.classList.remove('show');
+      confirmBtn.removeEventListener('click', onConfirm);
+      cancelBtn.removeEventListener('click', onCancel);
+      resolve(result);
+    }
+    function onConfirm() { cleanup(true); }
+    function onCancel()  { cleanup(false); }
+
+    confirmBtn.addEventListener('click', onConfirm);
+    cancelBtn.addEventListener('click', onCancel);
+  });
 }
 
 // ── Leader Mode: แสดงผู้ช่วยที่มีอยู่แล้ว (read-only) ────────────────────────
@@ -3573,8 +3639,9 @@ async function doRegister() {
 }
 
 /* ── doLogout ── */
-function doLogout() {
-  if (!confirm('ต้องการออกจากระบบ?')) return;
+async function doLogout() {
+  const ok = await tccConfirm('ต้องการออกจากระบบ?', 'ออกจากระบบ');
+  if (!ok) return;
   authClear();
   // ซ่อน profile card + userbar
   const pc = document.getElementById('profile-card');
